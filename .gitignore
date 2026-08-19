@@ -1,0 +1,4 @@
+# Material de referencia/administración: no debe quedar público en GitHub Pages
+# (revela la arquitectura interna compartida con el otro proyecto, y datos operativos).
+sql/
+LAVADAS.csv

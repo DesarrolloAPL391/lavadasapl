@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#2563eb" />
+  <title>Lavadero · Programación</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-header-title">
+      <img src="icons/icon-192.png" alt="" class="header-icon" />
+      <div>
+        <h1>Lavadero</h1>
+        <p id="fecha-hoy" class="header-sub"></p>
+      </div>
+    </div>
+    <button id="logout-btn" class="btn-ghost" type="button">Salir</button>
+  </header>
+
+  <main class="app-main">
+    <!-- HOY -->
+    <section id="tab-hoy" class="tab-panel active">
+      <div class="panel-head">
+        <h2 id="hoy-titulo">Carros de hoy</h2>
+        <span id="hoy-contador" class="badge">0 / 0</span>
+      </div>
+      <div class="progress-track"><div id="hoy-progress-fill" class="progress-fill"></div></div>
+
+      <div id="hoy-siguiente-card" class="hero-card" hidden>
+        <span class="hero-label">Siguiente para escanear</span>
+        <div class="hero-body">
+          <span id="hoy-siguiente-placa" class="hero-placa"></span>
+          <button id="hoy-siguiente-btn" type="button" class="hero-scan-btn" aria-label="Escanear carro">📷</button>
+        </div>
+      </div>
+
+      <ul id="hoy-lista" class="car-list"></ul>
+      <p id="hoy-vacio" class="empty-msg" hidden>No hay carros programados para hoy.</p>
+      <p id="hoy-pendientes-vacio" class="empty-msg empty-msg-ok" hidden>✔ Todos los carros de hoy quedaron lavados.</p>
+
+      <div id="hoy-hechos-wrap" class="hoy-hechos-wrap" hidden>
+        <h3 class="hoy-hechos-title">Ya lavados hoy</h3>
+        <ul id="hoy-lista-hechos" class="car-list car-list-hechos"></ul>
+      </div>
+    </section>
+
+    <!-- PROGRAMACIÓN SEMANAL -->
+    <section id="tab-programacion" class="tab-panel">
+      <div class="panel-head">
+        <h2>Programación semanal</h2>
+      </div>
+      <div id="programacion-grid" class="week-grid"></div>
+    </section>
+
+    <!-- HISTORIAL -->
+    <section id="tab-historial" class="tab-panel">
+      <div class="panel-head panel-head-wrap">
+        <h2>Historial de lavadas</h2>
+        <input id="historial-fecha" type="date" class="date-input" />
+      </div>
+      <ul id="historial-lista" class="car-list"></ul>
+      <p id="historial-vacio" class="empty-msg" hidden>No hay lavadas registradas en esta fecha.</p>
+    </section>
+  </main>
+
+  <footer class="app-footer">Lavadero <span data-app-version>v…</span></footer>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab-btn active" data-tab="hoy" role="tab" aria-selected="true">
+      <span class="tab-icon" aria-hidden="true">🚗</span>Hoy
+    </button>
+    <button class="tab-btn" data-tab="programacion" role="tab" aria-selected="false">
+      <span class="tab-icon" aria-hidden="true">📅</span>Programación
+    </button>
+    <button class="tab-btn" data-tab="historial" role="tab" aria-selected="false">
+      <span class="tab-icon" aria-hidden="true">🕓</span>Historial
+    </button>
+    <span id="tab-indicator" class="tab-indicator" aria-hidden="true"></span>
+  </nav>
+
+  <div id="scan-modal" class="scan-modal" hidden>
+    <div class="scan-topbar">
+      <span id="scan-status" class="scan-status"></span>
+      <button id="scan-close" class="scan-close" type="button" aria-label="Cerrar">✕</button>
+    </div>
+    <video id="scan-video" class="scan-video" playsinline muted autoplay></video>
+    <div id="scan-frame" class="scan-frame" aria-hidden="true"></div>
+    <div id="scan-result" class="scan-result" hidden></div>
+    <div id="scan-actions" class="scan-actions" hidden></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/vendor/jsQR.js"></script>
+  <script src="js/qrScanner.js"></script>
+  <script src="js/scan.js"></script>
+  <script src="js/pwaUpdate.js"></script>
+</body>
+</html>

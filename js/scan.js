@@ -107,11 +107,8 @@
       return;
     }
 
-    const { data: parque, error } = await supabaseClient
-      .from('parque_automotor')
-      .select('numero_interno, placa, marca, modelo, estado')
-      .ilike('placa', placa)
-      .maybeSingle();
+    const { data: filas, error } = await supabaseClient.rpc('buscar_movil_por_placa', { p_placa: placa });
+    const parque = filas && filas[0];
 
     if (error || !parque) {
       mostrarResultado(

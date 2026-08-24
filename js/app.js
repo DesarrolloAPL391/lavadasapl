@@ -7,6 +7,18 @@ const DAY_LABELS = {
 };
 const DAY_KEY_BY_INDEX = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
 
+const IVA = 0.19;
+const PRECIOS_BASE = { sencilla: 40000, completa: 110000 };
+
+function precioConIva(tipo) {
+  const base = PRECIOS_BASE[tipo];
+  return base ? Math.round(base * (1 + IVA)) : 0;
+}
+
+function formatoPesos(valor) {
+  return valor.toLocaleString('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+}
+
 let carros = []; // { id, numero_interno, dias }
 let lavadasHoyPorCarro = new Map(); // carro_id -> { id, tipo }
 
@@ -371,17 +383,24 @@ function renderProgramacion() {
 async function renderHistorial(fecha) {
   const lista = document.getElementById('historial-lista');
   const vacio = document.getElementById('historial-vacio');
+  const totalEl = document.getElementById('historial-total');
   lista.innerHTML = '';
 
   const lavadas = await cargarLavadasDeFecha(fecha);
 
   if (lavadas.length === 0) {
     vacio.hidden = false;
+    totalEl.hidden = true;
     return;
   }
   vacio.hidden = true;
 
+  let total = 0;
+
   lavadas.forEach((l) => {
+    const precio = precioConIva(l.tipo);
+    total += precio;
+
     const li = document.createElement('li');
     li.className = 'car-item';
 
@@ -406,16 +425,30 @@ async function renderHistorial(fecha) {
       info.appendChild(cond);
     }
 
+    const right = document.createElement('span');
+    right.className = 'car-right';
+
     const hora = document.createElement('span');
     hora.className = 'car-hora';
     hora.textContent = new Date(l.created_at).toLocaleTimeString('es-CO', {
       hour: '2-digit', minute: '2-digit',
     });
+    right.appendChild(hora);
+
+    if (precio > 0) {
+      const precioEl = document.createElement('span');
+      precioEl.className = 'car-precio';
+      precioEl.textContent = formatoPesos(precio);
+      right.appendChild(precioEl);
+    }
 
     li.appendChild(info);
-    li.appendChild(hora);
+    li.appendChild(right);
     lista.appendChild(li);
   });
+
+  totalEl.textContent = `Total del día (IVA incluido): ${formatoPesos(total)} · ${lavadas.length} lavada${lavadas.length === 1 ? '' : 's'}`;
+  totalEl.hidden = false;
 }
 
 const historialFechaInput = document.getElementById('historial-fecha');

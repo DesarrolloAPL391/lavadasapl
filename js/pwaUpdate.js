@@ -37,3 +37,32 @@ if ('serviceWorker' in navigator) {
     }
   });
 }
+
+// --- Instalar en el celular (Android/Chrome dispara beforeinstallprompt
+// cuando el manifest + service worker cumplen los requisitos de PWA) ---
+let promptInstalacion = null;
+
+window.addEventListener('beforeinstallprompt', (evento) => {
+  evento.preventDefault();
+  promptInstalacion = evento;
+
+  if (typeof Toast !== 'undefined') {
+    Toast.mostrar('Puedes instalar esta app en tu celular.', {
+      tipo: 'info',
+      duracion: 0,
+      accion: {
+        texto: 'Instalar',
+        onClick: () => {
+          if (promptInstalacion) {
+            promptInstalacion.prompt();
+            promptInstalacion = null;
+          }
+        },
+      },
+    });
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  promptInstalacion = null;
+});

@@ -3,7 +3,7 @@
 // Por eso la versión va escrita literal aquí (debe coincidir con APP_VERSION
 // en js/config.js) y no vía importScripts: así cualquier bump de versión
 // cambia este archivo y el navegador sí dispara la actualización.
-const APP_VERSION = '1.12.0';
+const APP_VERSION = '1.13.0';
 const CACHE_NAME = 'lavadero-cache-v' + APP_VERSION;
 const APP_SHELL = [
   './login.html',

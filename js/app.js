@@ -8,11 +8,22 @@ const DAY_LABELS = {
 const DAY_KEY_BY_INDEX = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
 
 const IVA = 0.19;
-const PRECIOS_BASE = { sencilla: 40000, completa: 110000 };
+// Valores por defecto: se reemplazan con lo que haya en la tabla
+// precios_lavada al iniciar (ver cargarPrecios). Sirven de respaldo si esa
+// consulta falla.
+let precios = { sencilla: 40000, completa: 110000 };
 
 function precioConIva(tipo) {
-  const base = PRECIOS_BASE[tipo];
+  const base = precios[tipo];
   return base ? Math.round(base * (1 + IVA)) : 0;
+}
+
+async function cargarPrecios() {
+  const { data, error } = await supabaseClient.from('precios_lavada').select('tipo, precio_base');
+  if (error || !data) return precios;
+  const mapa = { ...precios };
+  data.forEach((p) => { mapa[p.tipo] = Number(p.precio_base); });
+  return mapa;
 }
 
 function formatoPesos(valor) {
@@ -116,7 +127,7 @@ async function cargarCarros() {
 async function cargarLavadasDeFecha(fecha) {
   const { data, error } = await supabaseClient
     .from('lavadas')
-    .select('id, carro_id, tipo, created_at, conductor_nombre, carros ( numero_interno )')
+    .select('id, carro_id, tipo, created_at, conductor_nombre, precio_total, carros ( numero_interno )')
     .eq('fecha', fecha)
     .order('created_at', { ascending: true });
 
@@ -212,7 +223,13 @@ async function marcarTipo(carro, tipo, conductorNombre) {
 
   const { data, error } = await supabaseClient
     .from('lavadas')
-    .insert({ carro_id: carro.id, fecha, tipo, conductor_nombre: conductorNombre || null })
+    .insert({
+      carro_id: carro.id,
+      fecha,
+      tipo,
+      conductor_nombre: conductorNombre || null,
+      precio_total: precioConIva(tipo),
+    })
     .select('id')
     .single();
 
@@ -398,7 +415,7 @@ async function renderHistorial(fecha) {
   let total = 0;
 
   lavadas.forEach((l) => {
-    const precio = precioConIva(l.tipo);
+    const precio = l.precio_total != null ? Number(l.precio_total) : precioConIva(l.tipo);
     total += precio;
 
     const li = document.createElement('li');
@@ -465,6 +482,7 @@ async function init() {
   if (!autenticado) return;
 
   carros = await cargarCarros();
+  precios = await cargarPrecios();
 
   historialFechaInput.value = localISODate();
 

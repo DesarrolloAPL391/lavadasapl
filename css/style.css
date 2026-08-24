@@ -917,10 +917,10 @@ button {
   color: #1d4ed8;
 }
 
-.scan-card-tipo {
+.scan-card-tipo-badge {
   margin: 10px 0 0;
-  font-size: 14px;
-  color: #334155;
+  font-size: 13px;
+  padding: 4px 12px;
 }
 
 .scan-card-fecha {
@@ -938,6 +938,12 @@ button {
 
 .scan-msg-error {
   color: #fca5a5;
+}
+
+.scan-msg-confirm {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .scan-msg-ok {

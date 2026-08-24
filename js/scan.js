@@ -178,16 +178,17 @@
     const ahora = new Date();
     const fechaTexto = ahora.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
     const horaTexto = ahora.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+    const tipoTexto = tipo === 'sencilla' ? 'Sencilla' : 'Completa';
 
     const html = `
       <div class="scan-card">
         <p class="scan-card-num">Móvil ${escapeHtml(carro.numero_interno)}</p>
         <p class="scan-card-sub">Placa ${escapeHtml(parque.placa)}${parque.marca ? ' · ' + escapeHtml(parque.marca) : ''}</p>
         ${conductorNombre ? `<p class="scan-card-cond">Conductor: ${escapeHtml(conductorNombre)}</p>` : ''}
-        <p class="scan-card-tipo">Tipo: <strong>${tipo === 'sencilla' ? 'Sencilla' : 'Completa'}</strong></p>
+        <span class="tag-tipo tag-tipo-${tipo} scan-card-tipo-badge">${escapeHtml(tipoTexto)}</span>
         <p class="scan-card-fecha">${escapeHtml(fechaTexto)} · ${escapeHtml(horaTexto)}</p>
       </div>
-      <p class="scan-msg">¿Confirmas registrar esta lavada?</p>
+      <p class="scan-msg scan-msg-confirm">¿Estás seguro que es lavada <strong>${escapeHtml(tipoTexto).toUpperCase()}</strong>?<br>Lee bien antes de confirmar.</p>
     `;
 
     mostrarResultado(html, [
